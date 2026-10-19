@@ -1,3 +1,5 @@
 spring:
   application:
     name: order-tracker
+  profiles:
+    active: postgres
