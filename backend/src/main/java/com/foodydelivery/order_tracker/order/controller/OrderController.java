@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,6 +19,7 @@ import jakarta.validation.Valid;
 
 import com.foodydelivery.order_tracker.order.dto.OrderRequest;
 import com.foodydelivery.order_tracker.order.dto.OrderResponse;
+import com.foodydelivery.order_tracker.order.dto.OrderStatusUpdateRequest;
 import com.foodydelivery.order_tracker.order.service.OrderService;
 import com.foodydelivery.order_tracker.user.entity.User;
 
@@ -52,5 +54,14 @@ public class OrderController {
             @AuthenticationPrincipal User user
     ) {
         return orderService.findByUuidForUser(uuid, user);
+    }
+
+    @PatchMapping("/{uuid}/status")
+    public OrderResponse updateStatus(
+            @PathVariable UUID uuid,
+            @Valid @RequestBody OrderStatusUpdateRequest request,
+            @AuthenticationPrincipal User user
+    ) {
+        return orderService.updateStatus(uuid, request.status(), user);
     }
 }
