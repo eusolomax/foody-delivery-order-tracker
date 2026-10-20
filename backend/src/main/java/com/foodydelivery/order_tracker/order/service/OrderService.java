@@ -8,10 +8,13 @@ import com.foodydelivery.order_tracker.order.dto.OrderRequest;
 import com.foodydelivery.order_tracker.order.dto.OrderResponse;
 import com.foodydelivery.order_tracker.order.entity.Order;
 import com.foodydelivery.order_tracker.order.entity.OrderStatus;
+import com.foodydelivery.order_tracker.order.exception.OrderNotFoundException;
 import com.foodydelivery.order_tracker.order.mapper.OrderMapper;
 import com.foodydelivery.order_tracker.order.repository.OrderRepository;
 import com.foodydelivery.order_tracker.user.entity.User;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -44,5 +47,19 @@ public class OrderService {
 
             return orderMapper.toResponse(concurrentOrder);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> findAllByUser(User user) {
+        return orderRepository.findAllByUserUuidOrderByCreatedAtDesc(user.getUuid()).stream()
+                .map(orderMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public OrderResponse findByUuidForUser(UUID uuid, User user) {
+        return orderRepository.findByUuidAndUserUuid(uuid, user.getUuid())
+                .map(orderMapper::toResponse)
+                .orElseThrow(() -> new OrderNotFoundException(uuid));
     }
 }
