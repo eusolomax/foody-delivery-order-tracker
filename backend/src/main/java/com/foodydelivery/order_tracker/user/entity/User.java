@@ -1,4 +1,4 @@
-package com.foodydelivery.order_tracker.entity;
+package com.foodydelivery.order_tracker.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

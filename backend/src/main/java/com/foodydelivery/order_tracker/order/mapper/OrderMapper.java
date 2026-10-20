@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.foodydelivery.order_tracker.entity.Order;
-import com.foodydelivery.order_tracker.entity.OrderItem;
-import com.foodydelivery.order_tracker.entity.User;
+import com.foodydelivery.order_tracker.order.entity.Order;
+import com.foodydelivery.order_tracker.order.entity.OrderItem;
+import com.foodydelivery.order_tracker.user.entity.User;
 import com.foodydelivery.order_tracker.order.dto.OrderItemRequest;
 import com.foodydelivery.order_tracker.order.dto.OrderItemResponse;
 import com.foodydelivery.order_tracker.order.dto.OrderRequest;

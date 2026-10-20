@@ -13,7 +13,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.foodydelivery.order_tracker.repository.UserRepository;
+import com.foodydelivery.order_tracker.user.repository.UserRepository;
 
 @Configuration
 public class SecurityConfig {

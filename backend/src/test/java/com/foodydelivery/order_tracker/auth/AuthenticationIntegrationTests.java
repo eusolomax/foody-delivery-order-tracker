@@ -20,7 +20,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.foodydelivery.order_tracker.auth.service.JwtService;
-import com.foodydelivery.order_tracker.repository.UserRepository;
+import com.foodydelivery.order_tracker.user.repository.UserRepository;
 
 
 @SpringBootTest

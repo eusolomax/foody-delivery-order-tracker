@@ -16,8 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import com.foodydelivery.order_tracker.auth.service.JwtService;
-import com.foodydelivery.order_tracker.entity.User;
-import com.foodydelivery.order_tracker.repository.UserRepository;
+import com.foodydelivery.order_tracker.user.entity.User;
+import com.foodydelivery.order_tracker.user.repository.UserRepository;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

@@ -1,6 +1,6 @@
-package com.foodydelivery.order_tracker.controller;
+package com.foodydelivery.order_tracker.auth.controller;
 
-import com.foodydelivery.order_tracker.mapper.UserMapper;
+import com.foodydelivery.order_tracker.user.mapper.UserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import com.foodydelivery.order_tracker.auth.dto.LoginRequest;
 import com.foodydelivery.order_tracker.auth.dto.LoginResponse;
 import com.foodydelivery.order_tracker.auth.dto.RegisterRequest;
-import com.foodydelivery.order_tracker.auth.dto.UserResponse;
+import com.foodydelivery.order_tracker.user.dto.UserResponse;
 import com.foodydelivery.order_tracker.auth.service.AuthService;
 
 @RestController

@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import com.foodydelivery.order_tracker.entity.OrderStatus;
+import com.foodydelivery.order_tracker.order.entity.OrderStatus;
 
 public record OrderResponse(
         UUID uuid,
