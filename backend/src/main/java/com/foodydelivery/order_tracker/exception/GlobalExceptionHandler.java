@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.foodydelivery.order_tracker.dto.ApiError;
 import com.foodydelivery.order_tracker.auth.exception.DuplicateEmailException;
 import com.foodydelivery.order_tracker.order.exception.IdempotencyConflictException;
+import com.foodydelivery.order_tracker.order.exception.OrderNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -26,5 +27,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IdempotencyConflictException.class)
     public ResponseEntity<ApiError> handleIdempotencyConflict(IdempotencyConflictException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(exception.getMessage()));
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ApiError> handleOrderNotFound(OrderNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiError(exception.getMessage()));
     }
 }
