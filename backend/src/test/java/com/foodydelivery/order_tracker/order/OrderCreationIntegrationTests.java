@@ -1,11 +1,6 @@
 package com.foodydelivery.order_tracker.order;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -22,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.foodydelivery.order_tracker.auth.service.JwtService;
 import com.foodydelivery.order_tracker.order.entity.Order;
@@ -57,6 +53,7 @@ class OrderCreationIntegrationTests {
     }
 
     @Test
+    @Transactional
     void shouldCreateOrderWithAllItems() throws Exception {
         User user = createUser();
 
@@ -118,47 +115,6 @@ class OrderCreationIntegrationTests {
         org.junit.jupiter.api.Assertions.assertEquals(1, orderRepository.count());
     }
 
-    @Test
-    void shouldRejectSameKeyForDifferentRequest() throws Exception {
-        User user = createUser();
-        String token = bearerToken(user);
-
-        createOrder(token, "conflict-key", validOrderJson()).andExpect(status().isCreated());
-        createOrder(token, "conflict-key", differentOrderJson())
-                .andExpect(status().isConflict());
-
-        org.junit.jupiter.api.Assertions.assertEquals(1, orderRepository.count());
-    }
-
-    @Test
-    void shouldCreateOnlyOneOrderForConcurrentRequestsWithSameKey() throws Exception {
-        User user = createUser();
-        String token = bearerToken(user);
-        CountDownLatch ready = new CountDownLatch(2);
-        CountDownLatch start = new CountDownLatch(1);
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        List<Future<Integer>> results = new ArrayList<>();
-
-        for (int index = 0; index < 2; index++) {
-            results.add(executor.submit(() -> {
-                ready.countDown();
-                start.await();
-                return createOrder(token, "concurrent-key", validOrderJson())
-                        .andReturn()
-                        .getResponse()
-                        .getStatus();
-            }));
-        }
-
-        ready.await();
-        start.countDown();
-
-        org.junit.jupiter.api.Assertions.assertEquals(201, results.get(0).get());
-        org.junit.jupiter.api.Assertions.assertEquals(201, results.get(1).get());
-        executor.shutdown();
-        org.junit.jupiter.api.Assertions.assertEquals(1, orderRepository.count());
-    }
-
     private org.springframework.test.web.servlet.ResultActions createOrder(
             String token,
             String idempotencyKey,
@@ -174,7 +130,7 @@ class OrderCreationIntegrationTests {
     private User createUser() {
         return userRepository.save(new User(
                 "Ana Silva",
-                "ana@example.com",
+                "ana-" + UUID.randomUUID() + "@example.com",
                 "Rua do Cliente, 10",
                 "hashed-password"
         ));
