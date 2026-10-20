@@ -1,10 +1,11 @@
-package com.foodydelivery.order_tracker.entity;
+package com.foodydelivery.order_tracker.order.entity;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.foodydelivery.order_tracker.user.entity.User;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;

@@ -6,7 +6,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.foodydelivery.order_tracker.auth.dto.ApiError;
+import com.foodydelivery.order_tracker.dto.ApiError;
 import com.foodydelivery.order_tracker.auth.exception.DuplicateEmailException;
 
 @RestControllerAdvice

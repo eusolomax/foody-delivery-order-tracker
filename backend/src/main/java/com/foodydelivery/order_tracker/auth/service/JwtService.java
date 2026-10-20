@@ -14,7 +14,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-import com.foodydelivery.order_tracker.entity.User;
+import com.foodydelivery.order_tracker.user.entity.User;
 
 @Service
 public class JwtService {

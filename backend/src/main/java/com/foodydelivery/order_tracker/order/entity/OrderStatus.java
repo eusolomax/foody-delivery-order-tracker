@@ -1,4 +1,4 @@
-package com.foodydelivery.order_tracker.entity;
+package com.foodydelivery.order_tracker.order.entity;
 
 public enum OrderStatus {
     RECEBIDO,

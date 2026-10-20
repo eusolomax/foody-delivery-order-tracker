@@ -1,11 +1,11 @@
-package com.foodydelivery.order_tracker.mapper;
+package com.foodydelivery.order_tracker.user.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.foodydelivery.order_tracker.auth.dto.RegisterRequest;
-import com.foodydelivery.order_tracker.auth.dto.UserResponse;
-import com.foodydelivery.order_tracker.entity.User;
+import com.foodydelivery.order_tracker.user.dto.UserResponse;
+import com.foodydelivery.order_tracker.user.entity.User;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

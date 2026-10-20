@@ -1,4 +1,4 @@
-package com.foodydelivery.order_tracker.auth.dto;
+package com.foodydelivery.order_tracker.user.dto;
 
 import java.util.UUID;
 

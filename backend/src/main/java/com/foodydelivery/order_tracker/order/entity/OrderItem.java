@@ -1,4 +1,4 @@
-package com.foodydelivery.order_tracker.entity;
+package com.foodydelivery.order_tracker.order.entity;
 
 import java.util.UUID;
 
@@ -15,7 +15,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Check;
 
 @Entity
 @Table(name = "order_items")

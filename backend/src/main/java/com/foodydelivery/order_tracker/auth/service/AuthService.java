@@ -10,9 +10,9 @@ import com.foodydelivery.order_tracker.auth.dto.LoginRequest;
 import com.foodydelivery.order_tracker.auth.dto.LoginResponse;
 import com.foodydelivery.order_tracker.auth.dto.RegisterRequest;
 import com.foodydelivery.order_tracker.auth.exception.DuplicateEmailException;
-import com.foodydelivery.order_tracker.entity.User;
-import com.foodydelivery.order_tracker.mapper.UserMapper;
-import com.foodydelivery.order_tracker.repository.UserRepository;
+import com.foodydelivery.order_tracker.user.entity.User;
+import com.foodydelivery.order_tracker.user.mapper.UserMapper;
+import com.foodydelivery.order_tracker.user.repository.UserRepository;
 
 @Service
 public class AuthService {

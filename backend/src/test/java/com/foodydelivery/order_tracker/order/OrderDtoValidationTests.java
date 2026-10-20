@@ -14,7 +14,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-import com.foodydelivery.order_tracker.entity.OrderStatus;
+import com.foodydelivery.order_tracker.order.entity.OrderStatus;
 import com.foodydelivery.order_tracker.order.dto.OrderItemRequest;
 import com.foodydelivery.order_tracker.order.dto.OrderRequest;
 import com.foodydelivery.order_tracker.order.dto.OrderStatusUpdateRequest;
