@@ -38,7 +38,6 @@ class OrderDtoValidationTests {
     @Test
     void shouldAcceptValidOrderRequest() {
         OrderRequest request = new OrderRequest(
-                "Rua A, 10",
                 List.of(new OrderItemRequest("Pizza", 2))
         );
 
@@ -46,15 +45,8 @@ class OrderDtoValidationTests {
     }
 
     @Test
-    void shouldRejectMissingDeliveryAddress() {
-        OrderRequest request = new OrderRequest(null, List.of(new OrderItemRequest("Pizza", 1)));
-
-        assertTrue(hasViolation(request, "deliveryAddress"));
-    }
-
-    @Test
     void shouldRejectEmptyItemList() {
-        OrderRequest request = new OrderRequest("Rua A, 10", List.of());
+        OrderRequest request = new OrderRequest(List.of());
 
         assertTrue(hasViolation(request, "items"));
     }
@@ -69,7 +61,6 @@ class OrderDtoValidationTests {
     @Test
     void shouldRejectInvalidNestedItem() {
         OrderRequest request = new OrderRequest(
-                "Rua A, 10",
                 List.of(new OrderItemRequest(" ", 1))
         );
 

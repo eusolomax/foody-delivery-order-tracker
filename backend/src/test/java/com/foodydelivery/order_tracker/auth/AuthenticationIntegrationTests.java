@@ -122,7 +122,7 @@ class AuthenticationIntegrationTests {
 
         mockMvc.perform(get("/api/orders")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isMethodNotAllowed());
     }
 
     private void register(String email) throws Exception {
