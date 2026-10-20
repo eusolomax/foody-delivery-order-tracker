@@ -3,3 +3,8 @@ spring:
     name: order-tracker
   profiles:
     active: postgres
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION:3600000}
