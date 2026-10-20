@@ -37,6 +37,9 @@ public class Order {
     @Column(nullable = false, unique = true, updatable = false)
     private UUID uuid;
 
+    @Column(name = "idempotency_key", unique = true, length = 255, updatable = false)
+    private String idempotencyKey;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -80,5 +83,9 @@ public class Order {
 
     public Order(User user) {
         this.user = user;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
     }
 }

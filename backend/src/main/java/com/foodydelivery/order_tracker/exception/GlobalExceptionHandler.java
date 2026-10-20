@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.foodydelivery.order_tracker.dto.ApiError;
 import com.foodydelivery.order_tracker.auth.exception.DuplicateEmailException;
+import com.foodydelivery.order_tracker.order.exception.IdempotencyConflictException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,5 +21,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> handleBadCredentials() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiError("Invalid credentials"));
+    }
+
+    @ExceptionHandler(IdempotencyConflictException.class)
+    public ResponseEntity<ApiError> handleIdempotencyConflict(IdempotencyConflictException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(exception.getMessage()));
     }
 }
