@@ -122,7 +122,8 @@ class AuthenticationIntegrationTests {
 
         mockMvc.perform(get("/api/orders")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(status().isMethodNotAllowed());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", org.hamcrest.Matchers.hasSize(0)));
     }
 
     private void register(String email) throws Exception {
