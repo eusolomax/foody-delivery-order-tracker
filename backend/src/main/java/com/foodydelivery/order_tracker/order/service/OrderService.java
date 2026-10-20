@@ -9,6 +9,7 @@ import com.foodydelivery.order_tracker.order.dto.OrderResponse;
 import com.foodydelivery.order_tracker.order.entity.Order;
 import com.foodydelivery.order_tracker.order.entity.OrderStatus;
 import com.foodydelivery.order_tracker.order.exception.OrderNotFoundException;
+import com.foodydelivery.order_tracker.order.exception.InvalidOrderStatusTransitionException;
 import com.foodydelivery.order_tracker.order.mapper.OrderMapper;
 import com.foodydelivery.order_tracker.order.repository.OrderRepository;
 import com.foodydelivery.order_tracker.user.entity.User;
@@ -61,5 +62,27 @@ public class OrderService {
         return orderRepository.findByUuidAndUserUuid(uuid, user.getUuid())
                 .map(orderMapper::toResponse)
                 .orElseThrow(() -> new OrderNotFoundException(uuid));
+    }
+
+    @Transactional
+    public OrderResponse updateStatus(UUID uuid, OrderStatus newStatus, User user) {
+        Order order = orderRepository.findByUuidAndUserUuid(uuid, user.getUuid())
+                .orElseThrow(() -> new OrderNotFoundException(uuid));
+
+        if (!isAllowedTransition(order.getStatus(), newStatus)) {
+            throw new InvalidOrderStatusTransitionException(order.getStatus(), newStatus);
+        }
+
+        order.setStatus(newStatus);
+        return orderMapper.toResponse(orderRepository.saveAndFlush(order));
+    }
+
+    private boolean isAllowedTransition(OrderStatus currentStatus, OrderStatus newStatus) {
+        return switch (currentStatus) {
+            case RECEBIDO -> newStatus == OrderStatus.EM_PREPARO || newStatus == OrderStatus.CANCELADO;
+            case EM_PREPARO -> newStatus == OrderStatus.SAIU_PARA_ENTREGA || newStatus == OrderStatus.CANCELADO;
+            case SAIU_PARA_ENTREGA -> newStatus == OrderStatus.ENTREGUE;
+            case ENTREGUE, CANCELADO -> false;
+        };
     }
 }
