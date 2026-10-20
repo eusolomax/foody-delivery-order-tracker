@@ -1,5 +1,7 @@
 package com.foodydelivery.order_tracker.order;
 
+import java.util.UUID;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,7 +28,6 @@ import com.foodydelivery.order_tracker.user.repository.UserRepository;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
-@Transactional
 @TestPropertySource(properties = {
         "app.jwt.secret=test-jwt-secret-with-at-least-32-characters",
         "app.jwt.expiration=3600000"
@@ -52,11 +53,13 @@ class OrderCreationIntegrationTests {
     }
 
     @Test
+    @Transactional
     void shouldCreateOrderWithAllItems() throws Exception {
         User user = createUser();
 
         mockMvc.perform(post("/api/orders")
                         .header(HttpHeaders.AUTHORIZATION, bearerToken(user))
+                        .header("idempotency-key", "create-key")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(validOrderJson()))
                 .andExpect(status().isCreated())
@@ -69,7 +72,7 @@ class OrderCreationIntegrationTests {
                 .andExpect(jsonPath("$.items[0].productName").value("Pizza"))
                 .andExpect(jsonPath("$.items[1].quantity").value(1));
 
-        Order savedOrder = orderRepository.findAll().getFirst();
+        Order savedOrder = orderRepository.findByIdempotencyKey("create-key").orElseThrow();
         org.junit.jupiter.api.Assertions.assertEquals(2, savedOrder.getItems().size());
         org.junit.jupiter.api.Assertions.assertTrue(savedOrder.getItems().stream()
                 .allMatch(item -> item.getOrder() == savedOrder));
@@ -89,6 +92,7 @@ class OrderCreationIntegrationTests {
 
         mockMvc.perform(post("/api/orders")
                         .header(HttpHeaders.AUTHORIZATION, bearerToken(user))
+                        .header("Idempotency-Key", "invalid-key")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidOrderJson()))
                 .andExpect(status().isBadRequest());
@@ -96,10 +100,37 @@ class OrderCreationIntegrationTests {
         org.junit.jupiter.api.Assertions.assertTrue(orderRepository.findAll().isEmpty());
     }
 
+    @Test
+    void shouldReplaySameRequestWithoutDuplicatingOrder() throws Exception {
+        User user = createUser();
+        String token = bearerToken(user);
+
+        createOrder(token, "replay-key", validOrderJson()).andExpect(status().isCreated());
+        Order first = orderRepository.findByIdempotencyKey("replay-key").orElseThrow();
+
+        createOrder(token, "replay-key", validOrderJson())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.uuid").value(first.getUuid().toString()));
+
+        org.junit.jupiter.api.Assertions.assertEquals(1, orderRepository.count());
+    }
+
+    private org.springframework.test.web.servlet.ResultActions createOrder(
+            String token,
+            String idempotencyKey,
+            String body
+    ) throws Exception {
+        return mockMvc.perform(post("/api/orders")
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .header("Idempotency-Key", idempotencyKey)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body));
+    }
+
     private User createUser() {
         return userRepository.save(new User(
                 "Ana Silva",
-                "ana@example.com",
+                "ana-" + UUID.randomUUID() + "@example.com",
                 "Rua do Cliente, 10",
                 "hashed-password"
         ));
@@ -125,6 +156,16 @@ class OrderCreationIntegrationTests {
                 {
                   "items": [
                     {"productName": "", "quantity": 0}
+                  ]
+                }
+                """;
+    }
+
+    private String differentOrderJson() {
+        return """
+                {
+                  "items": [
+                    {"productName": "Pizza", "quantity": 3}
                   ]
                 }
                 """;

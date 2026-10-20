@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +29,10 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponse> create(
             @Valid @RequestBody OrderRequest request,
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal User user,
+            @RequestHeader(value = "idempotency-key") String idempotencyKey
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderService.createOrder(request, user));
+                .body(orderService.createOrder(request, user, idempotencyKey));
     }
 }
