@@ -86,6 +86,24 @@ class AuthenticationIntegrationTests {
     }
 
     @Test
+    void shouldReturnClearValidationMessageForEmptyRegistration() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("name: Name is required")));
+    }
+
+    @Test
+    void shouldRejectMalformedLoginBody() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Request body is malformed or contains invalid values"));
+    }
+
+    @Test
     void shouldLoginAndReturnJwt() throws Exception {
         register("login@example.com");
 

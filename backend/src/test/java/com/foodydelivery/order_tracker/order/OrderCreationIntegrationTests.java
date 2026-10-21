@@ -92,10 +92,11 @@ class OrderCreationIntegrationTests {
 
         mockMvc.perform(post("/api/orders")
                         .header(HttpHeaders.AUTHORIZATION, bearerToken(user))
-                        .header("Idempotency-Key", "invalid-key")
+                .header("Idempotency-Key", "invalid-key")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidOrderJson()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("productName: Product name is required")));
 
         org.junit.jupiter.api.Assertions.assertTrue(orderRepository.findAll().isEmpty());
     }

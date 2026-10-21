@@ -49,6 +49,7 @@ class OrderDtoValidationTests {
         OrderRequest request = new OrderRequest(List.of());
 
         assertTrue(hasViolation(request, "items"));
+        assertEquals("Items must contain at least one item", validator.validate(request).iterator().next().getMessage());
     }
 
     @Test
@@ -73,6 +74,7 @@ class OrderDtoValidationTests {
         OrderItemRequest item = new OrderItemRequest("Pizza", 0);
 
         assertTrue(hasViolation(item, "quantity"));
+        assertEquals("Quantity must be greater than zero", validator.validate(item).iterator().next().getMessage());
     }
 
     @Test
