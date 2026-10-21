@@ -39,10 +39,10 @@ cd backend
 Por padrão, a aplicação utiliza PostgreSQL, informe as variáveis de ambiente do banco:
 
 ```bash
-DB_NAME=foody_delivery \
-DB_USERNAME=meu_usuario \
-DB_PASSWORD=minha_senha \
-JWT_SECRET=uuid \
+DB_NAME="foody_delivery" \
+DB_USERNAME="meu_usuario" \
+DB_PASSWORD="minha_senha" \
+JWT_SECRET="UUID" \
 ./mvnw spring-boot:run
 ```
 
@@ -70,7 +70,7 @@ http://localhost:8080
 Para executar utilizando H2, use o profile `h2`:
 
 ```bash
-JWT_SECRET=uuid \
+JWT_SECRET="UUID" \
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=h2
 ```
 
