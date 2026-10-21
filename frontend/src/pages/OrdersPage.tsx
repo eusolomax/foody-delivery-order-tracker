@@ -69,6 +69,11 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
   const [orders, setOrders] = useState<OrderResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [successMessage] = useState(() => (
+    new URLSearchParams(window.location.search).has('created')
+      ? 'Pedido criado com sucesso.'
+      : ''
+  ))
 
   useEffect(() => {
     let isCurrent = true
@@ -115,6 +120,7 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
           </div>
           {!isLoading && !error && <span className="orders-count">{orders.length} {orders.length === 1 ? 'pedido' : 'pedidos'}</span>}
         </div>
+        {successMessage && <p className="orders-success" role="status">{successMessage}</p>}
 
         {isLoading && <p className="orders-feedback">Carregando seus pedidos...</p>}
         {!isLoading && error && <div className="orders-feedback feedback-error" role="alert"><strong>Algo saiu do forno errado.</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>Tentar novamente</button></div>}

@@ -11,6 +11,11 @@ export type OrderItem = {
   quantity: number
 }
 
+export type OrderItemRequest = {
+  productName: string
+  quantity: number
+}
+
 export type OrderResponse = {
   uuid: string
   customerName: string
