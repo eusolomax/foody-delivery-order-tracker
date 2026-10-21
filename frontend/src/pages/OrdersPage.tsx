@@ -8,6 +8,12 @@ type OrdersPageProps = {
   onNavigate: (path: string) => void
 }
 
+type OrderCardProps = {
+  order: OrderResponse
+  isUpdating: boolean
+  onUpdateStatus: (order: OrderResponse, status: OrderStatus) => void
+}
+
 const statusLabels: Record<OrderStatus, string> = {
   RECEBIDO: 'Recebido',
   EM_PREPARO: 'Em preparo',
@@ -33,7 +39,7 @@ function formatDate(value: string) {
   }).format(date)
 }
 
-function OrderCard({ order }: { order: OrderResponse }) {
+function OrderCard({ order, isUpdating, onUpdateStatus }: OrderCardProps) {
   return (
     <article className="order-summary">
       <header className="order-summary-header">
@@ -60,8 +66,37 @@ function OrderCard({ order }: { order: OrderResponse }) {
           ))}
         </ul>
       </div>
+      <div className="order-actions">
+        {allowedTransitions[order.status].map((nextStatus) => (
+          <button
+            className={nextStatus === 'CANCELADO' ? 'order-action order-action-danger' : 'order-action'}
+            disabled={isUpdating}
+            key={nextStatus}
+            type="button"
+            onClick={() => onUpdateStatus(order, nextStatus)}
+          >
+            {isUpdating ? 'Atualizando...' : statusActionLabels[nextStatus]}
+          </button>
+        ))}
+      </div>
     </article>
   )
+}
+
+const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {
+  RECEBIDO: ['EM_PREPARO', 'CANCELADO'],
+  EM_PREPARO: ['SAIU_PARA_ENTREGA', 'CANCELADO'],
+  SAIU_PARA_ENTREGA: ['ENTREGUE'],
+  ENTREGUE: [],
+  CANCELADO: [],
+}
+
+const statusActionLabels: Record<OrderStatus, string> = {
+  RECEBIDO: 'Marcar como recebido',
+  EM_PREPARO: 'Enviar para preparo',
+  SAIU_PARA_ENTREGA: 'Marcar como saiu',
+  ENTREGUE: 'Marcar como entregue',
+  CANCELADO: 'Cancelar pedido',
 }
 
 export function OrdersPage({ onNavigate }: OrdersPageProps) {
@@ -69,6 +104,8 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
   const [orders, setOrders] = useState<OrderResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [updatingOrderUuid, setUpdatingOrderUuid] = useState<string | null>(null)
+  const [statusMessage, setStatusMessage] = useState('')
   const [successMessage] = useState(() => (
     new URLSearchParams(window.location.search).has('created')
       ? 'Pedido criado com sucesso.'
@@ -99,6 +136,32 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
     return () => { isCurrent = false }
   }, [onNavigate, signOut])
 
+  async function handleStatusUpdate(order: OrderResponse, nextStatus: OrderStatus) {
+    const isIrreversible = nextStatus === 'ENTREGUE' || nextStatus === 'CANCELADO'
+    if (isIrreversible && !window.confirm(`Confirmar: ${statusActionLabels[nextStatus].toLowerCase()}?`)) {
+      return
+    }
+
+    setUpdatingOrderUuid(order.uuid)
+    setStatusMessage('')
+    try {
+      const updatedOrder = await ordersApi.updateStatus(order.uuid, nextStatus)
+      setOrders((currentOrders) => currentOrders.map((currentOrder) => (
+        currentOrder.uuid === updatedOrder.uuid ? updatedOrder : currentOrder
+      )))
+      setStatusMessage('Status atualizado com sucesso.')
+    } catch (requestError) {
+      if (requestError instanceof ApiRequestError && requestError.status === 401) {
+        signOut()
+        onNavigate('/login')
+        return
+      }
+      setError(requestError instanceof Error ? requestError.message : 'Nao foi possivel atualizar o status.')
+    } finally {
+      setUpdatingOrderUuid(null)
+    }
+  }
+
   return (
     <main className="orders-page">
       <nav className="topbar">
@@ -121,11 +184,12 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
           {!isLoading && !error && <span className="orders-count">{orders.length} {orders.length === 1 ? 'pedido' : 'pedidos'}</span>}
         </div>
         {successMessage && <p className="orders-success" role="status">{successMessage}</p>}
+        {statusMessage && <p className="orders-success" role="status">{statusMessage}</p>}
 
         {isLoading && <p className="orders-feedback">Carregando seus pedidos...</p>}
         {!isLoading && error && <div className="orders-feedback feedback-error" role="alert"><strong>Algo saiu do forno errado.</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>Tentar novamente</button></div>}
         {!isLoading && !error && orders.length === 0 && <div className="orders-feedback"><strong>Nenhum pedido por aqui.</strong><span>Quando você fizer um pedido, ele aparecerá nesta área.</span><button type="button" onClick={() => onNavigate('/orders/new')}>Começar um pedido <span aria-hidden="true">↗</span></button></div>}
-        {!isLoading && !error && orders.length > 0 && <div className="orders-list">{orders.map((order) => <OrderCard key={order.uuid} order={order} />)}</div>}
+        {!isLoading && !error && orders.length > 0 && <div className="orders-list">{orders.map((order) => <OrderCard key={order.uuid} order={order} isUpdating={updatingOrderUuid === order.uuid} onUpdateStatus={handleStatusUpdate} />)}</div>}
       </section>
     </main>
   )
