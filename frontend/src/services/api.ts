@@ -5,6 +5,13 @@ type ApiErrorResponse = {
   message?: string
 }
 
+export class ApiRequestError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message)
+    this.name = 'ApiRequestError'
+  }
+}
+
 type LoginResponse = {
   accessToken: string
   expiresIn: number
@@ -32,7 +39,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   }
 
   const error = await response.json().catch(() => null) as ApiErrorResponse | null
-  throw new Error(error?.message ?? 'Nao foi possivel concluir a solicitacao.')
+  if (response.status === 401) {
+    localStorage.removeItem(TOKEN_KEY)
+  }
+  throw new ApiRequestError(error?.message ?? 'Nao foi possivel concluir a solicitacao.', response.status)
 }
 
 export const authApi = {
@@ -48,6 +58,12 @@ export const authApi = {
       method: 'POST',
       body: JSON.stringify({ name, email, password, deliveryAddress }),
     })
+  },
+}
+
+export const ordersApi = {
+  list() {
+    return request<import('../types/orders').OrderResponse[]>('/api/orders')
   },
 }
 
