@@ -222,6 +222,16 @@ h1 em { color: #ef7658; font-family: 'Playfair Display', serif; font-weight: 600
 
 .order-items strong { color: #8da783; font: 11px 'DM Mono', monospace; }
 
+.order-actions { border-top: 1px solid #ebe3d7; display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; padding-top: 16px; }
+
+.order-action { background: #294238; border: 0; color: #fff8ee; cursor: pointer; font: 10px 'DM Mono', monospace; padding: 10px 12px; text-transform: uppercase; }
+
+.order-action:hover:not(:disabled) { background: #ef7658; }
+
+.order-action:disabled { cursor: wait; opacity: .55; }
+
+.order-action-danger { background: transparent; border: 1px solid #d59a8d; color: #a24f43; }
+
 .orders-feedback { align-items: flex-start; color: #65736b; display: flex; flex-direction: column; gap: 10px; padding: 70px 10px; }
 
 .orders-feedback strong { color: #294238; font: 22px 'Playfair Display', serif; }

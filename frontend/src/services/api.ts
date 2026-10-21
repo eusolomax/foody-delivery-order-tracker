@@ -73,6 +73,13 @@ export const ordersApi = {
       body: JSON.stringify({ items }),
     })
   },
+
+  updateStatus(uuid: string, status: import('../types/orders').OrderStatus) {
+    return request<import('../types/orders').OrderResponse>(`/api/orders/${uuid}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    })
+  },
 }
 
 export { TOKEN_KEY }
