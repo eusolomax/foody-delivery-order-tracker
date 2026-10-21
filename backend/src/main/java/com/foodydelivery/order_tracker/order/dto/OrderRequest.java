@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 
 public record OrderRequest(
-        @NotEmpty
+        @NotEmpty(message = "Items must contain at least one item")
         List<@Valid OrderItemRequest>
         items
 ) {

@@ -6,12 +6,12 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record OrderItemRequest(
-        @NotBlank
+        @NotBlank(message = "Product name is required")
         @Size(max = 255)
         String productName,
 
-        @NotNull
-        @Positive
+        @NotNull(message = "Quantity is required")
+        @Positive(message = "Quantity must be greater than zero")
         Integer quantity
 ) {
 }
