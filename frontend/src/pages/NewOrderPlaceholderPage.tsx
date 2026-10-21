@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 
+import { useAuth } from '../context/AuthContext'
 import { ApiRequestError, ordersApi } from '../services/api'
 import type { OrderItemRequest } from '../types/orders'
 
@@ -12,6 +13,7 @@ function createKey() {
 }
 
 export function NewOrderPage({ onNavigate }: NewOrderPageProps) {
+  const { signOut } = useAuth()
   const [items, setItems] = useState<OrderItemRequest[]>([{ productName: '', quantity: 1 }])
   const [idempotencyKey, setIdempotencyKey] = useState(createKey)
   const [error, setError] = useState('')
@@ -65,6 +67,7 @@ export function NewOrderPage({ onNavigate }: NewOrderPageProps) {
       onNavigate('/orders?created=1')
     } catch (requestError) {
       if (requestError instanceof ApiRequestError && requestError.status === 401) {
+        signOut()
         onNavigate('/login')
         return
       }
