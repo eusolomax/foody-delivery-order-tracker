@@ -236,6 +236,40 @@ h1 em { color: #ef7658; font-family: 'Playfair Display', serif; font-weight: 600
 
 .placeholder-back { margin-top: 24px; }
 
+.new-order-content { margin: clamp(70px, 11vh, 120px) auto 0; max-width: 800px; }
+
+.new-order-content h1 { font-size: clamp(54px, 7vw, 90px); }
+
+.order-form { background: #fffaf1; box-shadow: 10px 12px 0 rgba(41, 66, 56, .06); margin-top: 36px; padding: clamp(22px, 4vw, 36px); }
+
+.order-form-heading, .order-form-footer { align-items: center; display: flex; justify-content: space-between; }
+
+.order-form-heading { border-bottom: 1px solid #dfd9ce; color: #53645b; font: 11px 'DM Mono', monospace; letter-spacing: .06em; padding-bottom: 16px; text-transform: uppercase; }
+
+.order-form-heading span:last-child { color: #8b958e; }
+
+.order-form-row { align-items: end; border-bottom: 1px solid #ebe3d7; display: grid; gap: 14px; grid-template-columns: 1fr 90px 32px; padding: 18px 0; }
+
+.order-form-row label { color: #53645b; display: grid; font: 10px 'DM Mono', monospace; gap: 8px; letter-spacing: .08em; text-transform: uppercase; }
+
+.order-form-row input { background: #f6f1e8; border: 1px solid #dfd9ce; color: #294238; font: 14px 'DM Sans', sans-serif; outline: none; padding: 12px; width: 100%; }
+
+.order-form-row input:focus { border-color: #7da270; box-shadow: 0 0 0 3px rgba(125, 162, 112, .16); }
+
+.remove-item { background: transparent; border: 0; color: #a24f43; cursor: pointer; font-size: 22px; line-height: 1; padding: 9px 0; }
+
+.remove-item:disabled { color: #cfc9bd; cursor: not-allowed; }
+
+.add-item { background: transparent; border: 0; color: #ef7658; cursor: pointer; font: 11px 'DM Mono', monospace; margin-top: 18px; padding: 4px 0; text-transform: uppercase; }
+
+.add-item:disabled { cursor: wait; opacity: .6; }
+
+.order-form-footer { align-items: end; gap: 20px; margin-top: 28px; }
+
+.idempotency-note { color: #8b958e; font: 10px/1.5 'DM Mono', monospace; text-transform: uppercase; }
+
+.orders-success { background: #dce9d8; color: #52744c; font: 11px 'DM Mono', monospace; margin: 20px 0 0; padding: 12px 14px; text-transform: uppercase; }
+
 @media (max-width: 560px) {
   .auth-brand { left: 22px; top: 22px; }
   .auth-card { box-shadow: 8px 12px 0 rgba(41, 66, 56, .08); }
@@ -249,4 +283,7 @@ h1 em { color: #ef7658; font-family: 'Playfair Display', serif; font-weight: 600
   .orders-count { padding-bottom: 0; }
   .order-summary-body { align-items: stretch; flex-direction: column; gap: 18px; }
   .order-items { min-width: 0; }
+  .order-form-row { grid-template-columns: 1fr 72px 24px; }
+  .order-form-footer { align-items: stretch; flex-direction: column; }
+  .order-form-footer .form-submit { width: 100%; }
 }

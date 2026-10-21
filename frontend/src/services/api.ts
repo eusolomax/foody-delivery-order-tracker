@@ -65,6 +65,14 @@ export const ordersApi = {
   list() {
     return request<import('../types/orders').OrderResponse[]>('/api/orders')
   },
+
+  create(items: import('../types/orders').OrderItemRequest[], idempotencyKey: string) {
+    return request<import('../types/orders').OrderResponse>('/api/orders', {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey },
+      body: JSON.stringify({ items }),
+    })
+  },
 }
 
 export { TOKEN_KEY }

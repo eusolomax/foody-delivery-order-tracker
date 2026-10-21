@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from './context/AuthContext'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
-import { NewOrderPlaceholderPage } from './pages/NewOrderPlaceholderPage'
+import { NewOrderPage } from './pages/NewOrderPlaceholderPage'
 import { OrdersPage } from './pages/OrdersPage'
 import { RegisterPage } from './pages/RegisterPage'
 
@@ -35,7 +35,7 @@ export function App() {
     if (!isAuthenticated) {
       return <LoginPage onNavigate={navigate} />
     }
-    return <NewOrderPlaceholderPage onNavigate={navigate} />
+    return <NewOrderPage onNavigate={navigate} />
   }
   return <HomePage />
 }
