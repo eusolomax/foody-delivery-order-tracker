@@ -17,7 +17,7 @@ export function HomePage() {
             entrega e cliente em um so lugar.
           </p>
           <div className="hero-actions">
-            <a className="primary-action" href="#como-funciona">
+            <a className="primary-action" href="/login">
               Entrar no aplicativo <span aria-hidden="true">↗</span>
             </a>
             <span className="hero-note">feito para operacoes que<br />nao param</span>
