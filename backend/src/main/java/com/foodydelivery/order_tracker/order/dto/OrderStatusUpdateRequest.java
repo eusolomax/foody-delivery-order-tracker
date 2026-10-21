@@ -4,7 +4,7 @@ import com.foodydelivery.order_tracker.order.entity.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 
 public record OrderStatusUpdateRequest(
-        @NotNull
+        @NotNull(message = "Status is required")
         OrderStatus status
 ) {
 }
