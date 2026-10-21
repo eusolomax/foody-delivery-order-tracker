@@ -104,6 +104,7 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
   const [orders, setOrders] = useState<OrderResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [statusError, setStatusError] = useState('')
   const [updatingOrderUuid, setUpdatingOrderUuid] = useState<string | null>(null)
   const [statusMessage, setStatusMessage] = useState('')
   const [successMessage] = useState(() => (
@@ -144,6 +145,7 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
 
     setUpdatingOrderUuid(order.uuid)
     setStatusMessage('')
+    setStatusError('')
     try {
       const updatedOrder = await ordersApi.updateStatus(order.uuid, nextStatus)
       setOrders((currentOrders) => currentOrders.map((currentOrder) => (
@@ -156,7 +158,7 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
         onNavigate('/login')
         return
       }
-      setError(requestError instanceof Error ? requestError.message : 'Nao foi possivel atualizar o status.')
+      setStatusError(requestError instanceof Error ? requestError.message : 'Nao foi possivel atualizar o status.')
     } finally {
       setUpdatingOrderUuid(null)
     }
@@ -185,6 +187,7 @@ export function OrdersPage({ onNavigate }: OrdersPageProps) {
         </div>
         {successMessage && <p className="orders-success" role="status">{successMessage}</p>}
         {statusMessage && <p className="orders-success" role="status">{statusMessage}</p>}
+        {statusError && <p className="orders-status-error" role="alert">{statusError}</p>}
 
         {isLoading && <p className="orders-feedback">Carregando seus pedidos...</p>}
         {!isLoading && error && <div className="orders-feedback feedback-error" role="alert"><strong>Algo saiu do forno errado.</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>Tentar novamente</button></div>}

@@ -280,6 +280,8 @@ h1 em { color: #ef7658; font-family: 'Playfair Display', serif; font-weight: 600
 
 .orders-success { background: #dce9d8; color: #52744c; font: 11px 'DM Mono', monospace; margin: 20px 0 0; padding: 12px 14px; text-transform: uppercase; }
 
+.orders-status-error { background: #f3dbd5; color: #a24f43; font: 11px 'DM Mono', monospace; margin: 20px 0 0; padding: 12px 14px; }
+
 @media (max-width: 560px) {
   .auth-brand { left: 22px; top: 22px; }
   .auth-card { box-shadow: 8px 12px 0 rgba(41, 66, 56, .08); }
